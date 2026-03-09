@@ -57,6 +57,10 @@ public class JwtService {
         return parseClaims(token).getExpiration().before(new Date());
     }
 
+    public java.time.Instant getExpiration(String token) {
+        return parseClaims(token).getExpiration().toInstant();
+    }
+
     private Claims parseClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(signingKey)

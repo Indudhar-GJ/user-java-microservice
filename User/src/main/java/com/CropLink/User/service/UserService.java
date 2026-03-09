@@ -6,8 +6,12 @@ import com.CropLink.User.dto.RegisterRequest;
 
 public interface UserService {
 
-    AuthResponse register(RegisterRequest request);
+    /**
+     * Validates the request and sends an OTP to the email. Returns a simple acknowledgement message.
+     */
+    String initiateRegistration(RegisterRequest request);
 
     AuthResponse login(LoginRequest request);
 }
+
 

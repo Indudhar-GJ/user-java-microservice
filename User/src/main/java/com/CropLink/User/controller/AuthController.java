@@ -1,10 +1,6 @@
 package com.CropLink.User.controller;
 
-import com.CropLink.User.dto.ApiResponse;
-import com.CropLink.User.dto.AuthResponse;
-import com.CropLink.User.dto.LoginRequest;
-import com.CropLink.User.dto.RegisterRequest;
-import com.CropLink.User.dto.VerifyOtpRequest;
+import com.CropLink.User.dto.*;
 import com.CropLink.User.model.BlockedToken;
 import com.CropLink.User.repository.BlockedTokenRepository;
 import com.CropLink.User.security.JwtService;
@@ -16,10 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
@@ -49,8 +43,16 @@ public class AuthController {
         return ResponseEntity.ok(new ApiResponse<>("Login successful", auth));
     }
 
+    @PutMapping("/profile")
+    public ResponseEntity<ApiResponse<Void>> updateProfile(@Valid @RequestBody UpdateProfileRequest request) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        userService.updateProfile(email, request);
+        return ResponseEntity.ok(ApiResponse.of("Profile updated successfully"));
+    }
+
     @PostMapping("/logout")
     public ResponseEntity<ApiResponse<Void>> logout(HttpServletRequest request) {
+
         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
